@@ -31,7 +31,7 @@ namespace SlamTest
         private SerialDevice myport;
         private DeviceInformationCollection tempInfo;
         private DeviceInformation selectedSerialDevice;
-
+        private bool isStopped = true;
         public MainPage()
         {
             this.InitializeComponent();
@@ -46,44 +46,43 @@ namespace SlamTest
 
         private void SerialList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            StartSerialButton.IsEnabled = true;
+            StartStopButton.IsEnabled = true;
             selectedSerialDevice = tempInfo[SerialList.SelectedIndex];
-            StartSerialButton.Content = selectedSerialDevice.Name;
         }
 
         SerialReader serialReader = new SerialReader();
-        private async void StartSerialButton_OnClick(object sender, RoutedEventArgs e)
+        private async void StartStopSerialButton_OnClick(object sender, RoutedEventArgs e)
         {
-            StopSerialButton.IsEnabled = true;
-
-            var serialDevice = await SerialDevice.FromIdAsync(selectedSerialDevice.Id);
-
-            if (serialDevice != null)
+            if (isStopped)
             {
-                serialDevice.BaudRate = 115200;
-                //SerialReadTextBlock.Text = serialDevice.PortName;
-                serialDevice.IsDataTerminalReadyEnabled = true;
-                //SerialReader serialReader = new SerialReader();
-                serialReader.Listen(serialDevice);
-                serialReader.RaiseDataReceivedEvent += SerialReaderOnRaiseDataReceivedEvent;
+                isStopped = false;
+
+                var serialDevice = await SerialDevice.FromIdAsync(selectedSerialDevice.Id);
+
+                if (serialDevice != null)
+                {
+                    serialDevice.BaudRate = 115200;
+                    serialDevice.IsDataTerminalReadyEnabled = true;
+                    serialReader.Listen(serialDevice);
+                    serialReader.RaiseDataReceivedEvent += SerialReaderOnRaiseDataReceivedEvent;
+                }
+                else
+                {
+                    //The serial device doesn't work.
+                    RefreshSerialDevices();
+                }
             }
             else
             {
-                //The serial device doesn't work.
-                RefreshSerialDevices();
+                isStopped = true;
+                serialReader.CancelReadTask();
+                serialReader.RaiseDataReceivedEvent -= SerialReaderOnRaiseDataReceivedEvent;
             }
         }
 
         private void SerialReaderOnRaiseDataReceivedEvent(object sender, SerialReadEventArgs serialReadEventArgs)
         {
             SerialReadTextBlock.Text = serialReadEventArgs.Message;
-        }
-
-        private void StopSerialButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            StopSerialButton.IsEnabled = false;
-            serialReader.CancelReadTask();
-            serialReader.RaiseDataReceivedEvent -= SerialReaderOnRaiseDataReceivedEvent;
         }
 
         private void RefreshButton_OnClick(object sender, RoutedEventArgs e)
@@ -101,13 +100,16 @@ namespace SlamTest
 
             SerialList.DataContext = tempInfo;
             SerialList.Items?.Clear();
+            SerialList.SelectionChanged += SerialList_OnSelectionChanged;
             foreach (var item in tempInfo)
             {
                 SerialList.Items.Add(item.Name);
+                //Fast track selection
+                if (item.Name.Contains("Arduino") || item.Name.Contains("BTG"))
+                {
+                    SerialList.SelectedItem = item.Name;
+                }
             }
-            //Prevent nulls
-            SerialList.SelectionChanged += SerialList_OnSelectionChanged;
-
         }
     }
 }

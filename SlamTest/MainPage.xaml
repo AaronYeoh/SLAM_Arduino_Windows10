@@ -22,16 +22,13 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Name="SerialReadTextBlock" Grid.Column="0"></TextBlock>
             </Grid>
-            <ComboBox Grid.Row="1" Name="SerialList" Background="Bisque"></ComboBox>
+            
 
             <Grid  Grid.Row="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Name="StartSerialButton" IsEnabled="False" Click="StartSerialButton_OnClick">Start Serial!</Button>
-                <Button Grid.Column="1" Name="StopSerialButton" IsEnabled="False" Click="StopSerialButton_OnClick">Start Serial!</Button>
-
             </Grid>
             
             <TextBlock Grid.Row="3" Name="SerialInfoTextBlock" TextWrapping="Wrap"  FontSize="32" VerticalAlignment="Stretch" >Select Serial Port</TextBlock>
@@ -40,7 +37,23 @@
     </Grid>
 <Page.TopAppBar>
         <CommandBar>
-            <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" Click="RefreshButton_OnClick"></AppBarButton>
+            <AppBarButton Name="StartStopButton" Icon="Play" IsEnabled="False" ToolTipService.ToolTip="Start Serial Read" Click="StartStopSerialButton_OnClick"></AppBarButton>
+
+            <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" ToolTipService.ToolTip="Stop Serial Read" Click="RefreshButton_OnClick"></AppBarButton>
+            
+            <!--<CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Setting" Label="Bluetooth settings">
+                    <Hyperlink NavigateUri="ms-settings:bluetooth">
+                        <Run Text="Settings" />
+                    </Hyperlink>
+                </AppBarButton>
+            </CommandBar.SecondaryCommands>-->
+            <CommandBar.Content>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="8" FontSize="18">Serial Device:</TextBlock>
+                <ComboBox Margin="7" MinWidth="150"  Name="SerialList" Background="Bisque"></ComboBox>
+                </StackPanel>
+            </CommandBar.Content>
 
 
     </CommandBar>
