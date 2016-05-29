@@ -39,22 +39,10 @@ namespace SlamTest
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-           // myport.BaudRate = 115200;
-            
-            string _serialSelector = SerialDevice.GetDeviceSelector();
-            //SerialInfoTextBlock.Text = SerialDevice.GetDeviceSelectorFromUsbVidPid(2341, 8041);
-            tempInfo = await DeviceInformation.FindAllAsync(_serialSelector);
-
-            SerialList.DataContext = tempInfo;
-
-
-            foreach (var item in tempInfo)
-            {
-                SerialList.Items.Add(item.Name);
-            }
-
-
+            RefreshSerialDevices();
         }
+
+
 
         private void SerialList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -63,22 +51,63 @@ namespace SlamTest
             StartSerialButton.Content = selectedSerialDevice.Name;
         }
 
-
+        SerialReader serialReader = new SerialReader();
         private async void StartSerialButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var serialDevice = await SerialDevice.FromIdAsync(selectedSerialDevice.Id);
-            serialDevice.BaudRate = 115200;
-            SerialReadTextBlock.Text = serialDevice.PortName;
-            serialDevice.IsDataTerminalReadyEnabled = true;
-            SerialReader serialReader = new SerialReader();
-            serialReader.Listen(serialDevice);
-            serialReader.RaiseDataReceivedEvent += SerialReaderOnRaiseDataReceivedEvent;
+            StopSerialButton.IsEnabled = true;
 
+            var serialDevice = await SerialDevice.FromIdAsync(selectedSerialDevice.Id);
+
+            if (serialDevice != null)
+            {
+                serialDevice.BaudRate = 115200;
+                //SerialReadTextBlock.Text = serialDevice.PortName;
+                serialDevice.IsDataTerminalReadyEnabled = true;
+                //SerialReader serialReader = new SerialReader();
+                serialReader.Listen(serialDevice);
+                serialReader.RaiseDataReceivedEvent += SerialReaderOnRaiseDataReceivedEvent;
+            }
+            else
+            {
+                //The serial device doesn't work.
+                RefreshSerialDevices();
+            }
         }
 
         private void SerialReaderOnRaiseDataReceivedEvent(object sender, SerialReadEventArgs serialReadEventArgs)
         {
             SerialReadTextBlock.Text = serialReadEventArgs.Message;
+        }
+
+        private void StopSerialButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            StopSerialButton.IsEnabled = false;
+            serialReader.CancelReadTask();
+            serialReader.RaiseDataReceivedEvent -= SerialReaderOnRaiseDataReceivedEvent;
+        }
+
+        private void RefreshButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            RefreshSerialDevices();
+        }
+
+        private async void RefreshSerialDevices()
+        {
+            //Prevent null exceptions
+            SerialList.SelectionChanged -= SerialList_OnSelectionChanged;
+            string _serialSelector = SerialDevice.GetDeviceSelector();
+            //SerialInfoTextBlock.Text = SerialDevice.GetDeviceSelectorFromUsbVidPid(2341, 8041);
+            tempInfo = await DeviceInformation.FindAllAsync(_serialSelector);
+
+            SerialList.DataContext = tempInfo;
+            SerialList.Items?.Clear();
+            foreach (var item in tempInfo)
+            {
+                SerialList.Items.Add(item.Name);
+            }
+            //Prevent nulls
+            SerialList.SelectionChanged += SerialList_OnSelectionChanged;
+
         }
     }
 }

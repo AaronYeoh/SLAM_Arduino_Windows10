@@ -22,10 +22,28 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Name="SerialReadTextBlock" Grid.Column="0"></TextBlock>
             </Grid>
-            <ComboBox Grid.Row="1" Name="SerialList" Background="Bisque" SelectionChanged="SerialList_OnSelectionChanged"></ComboBox>
-            <Button Name="StartSerialButton" Grid.Row="2" IsEnabled="False" Click="StartSerialButton_OnClick">Start Serial!</Button>
+            <ComboBox Grid.Row="1" Name="SerialList" Background="Bisque"></ComboBox>
+
+            <Grid  Grid.Row="2" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Name="StartSerialButton" IsEnabled="False" Click="StartSerialButton_OnClick">Start Serial!</Button>
+                <Button Grid.Column="1" Name="StopSerialButton" IsEnabled="False" Click="StopSerialButton_OnClick">Start Serial!</Button>
+
+            </Grid>
+            
             <TextBlock Grid.Row="3" Name="SerialInfoTextBlock" TextWrapping="Wrap"  FontSize="32" VerticalAlignment="Stretch" >Select Serial Port</TextBlock>
         </Grid>
 
     </Grid>
+<Page.TopAppBar>
+        <CommandBar>
+            <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" Click="RefreshButton_OnClick"></AppBarButton>
+
+
+    </CommandBar>
+</Page.TopAppBar>
+
 </Page>

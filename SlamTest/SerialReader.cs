@@ -59,15 +59,14 @@ namespace SlamTest
             }
             catch (Exception ex)
             {
-                if (ex.GetType().Name == "TaskCanceledException")
+                if (ex.GetType().Name == "TaskCanceledException" || ex.GetType() == typeof(OperationCanceledException))
                 {
                     CloseDevice();
                 }
-                throw ex;
-                //else
-                //{
-                //    status.Text = ex.Message;
-                //}
+                else
+                {
+                    var problemTxt = ex.Message; // Does nothing for now
+                }
             }
             finally
             {
@@ -84,7 +83,7 @@ namespace SlamTest
         {
             Task<UInt32> loadAsyncTask;
 
-            uint ReadBufferLength = 1024;
+            uint ReadBufferLength = 12;
 
             // If task cancellation was requested, comply
             cancellationToken.ThrowIfCancellationRequested();
@@ -97,10 +96,10 @@ namespace SlamTest
 
             // Launch the task and wait
             UInt32 bytesRead = await loadAsyncTask;
-            //if (bytesRead > 0)
-            //{
-                return dataReaderObject.ReadString(bytesRead);
-            //}
+
+
+            return dataReaderObject.ReadString(bytesRead);
+
         }
 
 
@@ -109,7 +108,7 @@ namespace SlamTest
         /// CancelReadTask:
         /// - Uses the ReadCancellationTokenSource to cancel read operations
         /// </summary>
-        private void CancelReadTask()
+        public void CancelReadTask()
         {
             if (ReadCancellationTokenSource != null)
             {
