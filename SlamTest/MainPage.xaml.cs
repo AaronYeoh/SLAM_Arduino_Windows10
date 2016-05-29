@@ -48,35 +48,56 @@ namespace SlamTest
         {
             StartStopButton.IsEnabled = true;
             selectedSerialDevice = tempInfo[SerialList.SelectedIndex];
+            StopSerialRead();
         }
 
         SerialReader serialReader = new SerialReader();
         private async void StartStopSerialButton_OnClick(object sender, RoutedEventArgs e)
         {
+            await StartStopSerialRead();
+        }
+
+        private async Task StartStopSerialRead()
+        {
             if (isStopped)
             {
-                isStopped = false;
-
-                var serialDevice = await SerialDevice.FromIdAsync(selectedSerialDevice.Id);
-
-                if (serialDevice != null)
-                {
-                    serialDevice.BaudRate = 115200;
-                    serialDevice.IsDataTerminalReadyEnabled = true;
-                    serialReader.Listen(serialDevice);
-                    serialReader.RaiseDataReceivedEvent += SerialReaderOnRaiseDataReceivedEvent;
-                }
-                else
-                {
-                    //The serial device doesn't work.
-                    RefreshSerialDevices();
-                }
+                await StartSerialRead();
             }
             else
             {
-                isStopped = true;
-                serialReader.CancelReadTask();
-                serialReader.RaiseDataReceivedEvent -= SerialReaderOnRaiseDataReceivedEvent;
+                StopSerialRead();
+            }
+        }
+
+        private void StopSerialRead()
+        {
+            isStopped = true;
+            StartStopButton.Icon = new SymbolIcon(Symbol.Play);
+            serialReader.CancelReadTask();
+            serialReader.RaiseDataReceivedEvent -= SerialReaderOnRaiseDataReceivedEvent;
+        }
+
+        private async Task StartSerialRead()
+        {
+            isStopped = false;
+            StartStopButton.Icon = new SymbolIcon(Symbol.Stop);
+            ToolTip toolTip = new ToolTip();
+            toolTip.Content = "Stop reading Serial Device";
+            ToolTipService.SetToolTip(StartStopButton, toolTip);
+
+            var serialDevice = await SerialDevice.FromIdAsync(selectedSerialDevice.Id);
+
+            if (serialDevice != null)
+            {
+                serialDevice.BaudRate = 115200;
+                serialDevice.IsDataTerminalReadyEnabled = true;
+                serialReader.Listen(serialDevice);
+                serialReader.RaiseDataReceivedEvent += SerialReaderOnRaiseDataReceivedEvent;
+            }
+            else
+            {
+                //The serial device doesn't work.
+                RefreshSerialDevices();
             }
         }
 
@@ -109,6 +130,10 @@ namespace SlamTest
                 {
                     SerialList.SelectedItem = item.Name;
                 }
+            }
+            if (tempInfo.Count == 0)
+            {
+                SerialList.PlaceholderText = "No serial devices available";
             }
         }
     }

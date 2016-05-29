@@ -37,9 +37,9 @@
     </Grid>
 <Page.TopAppBar>
         <CommandBar>
-            <AppBarButton Name="StartStopButton" Icon="Play" IsEnabled="False" ToolTipService.ToolTip="Start Serial Read" Click="StartStopSerialButton_OnClick"></AppBarButton>
+            <AppBarButton Name="StartStopButton" Icon="Play" Label="Start reading Serial Device" IsEnabled="False" ToolTipService.ToolTip="Start reading Serial Device"  Click="StartStopSerialButton_OnClick"></AppBarButton>
 
-            <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" ToolTipService.ToolTip="Stop Serial Read" Click="RefreshButton_OnClick"></AppBarButton>
+            <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" ToolTipService.ToolTip="Refresh Serial Devices" Click="RefreshButton_OnClick"></AppBarButton>
             
             <!--<CommandBar.SecondaryCommands>
                 <AppBarButton Icon="Setting" Label="Bluetooth settings">
@@ -51,7 +51,7 @@
             <CommandBar.Content>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="8" FontSize="18">Serial Device:</TextBlock>
-                <ComboBox Margin="7" MinWidth="150"  Name="SerialList" Background="Bisque"></ComboBox>
+                <ComboBox Margin="7" MinWidth="150"  Name="SerialList" Background="Bisque" PlaceholderText="Choose serial device"></ComboBox>
                 </StackPanel>
             </CommandBar.Content>
 
