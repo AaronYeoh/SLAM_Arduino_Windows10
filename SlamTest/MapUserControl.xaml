@@ -19,7 +19,7 @@
                             <TextBlock Text="{Binding [0]}"></TextBlock>
                             <TextBlock Text="{Binding [1]}"></TextBlock>
                             <TextBlock Text="{Binding [2]}"></TextBlock>
-                            <TextBlock Text="{Binding [3}"></TextBlock>
+                            <TextBlock Text="{Binding [3]}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

@@ -22,7 +22,7 @@
             </Grid>
 
 
-            <local:MapUserControl x:Name="MapUserControlInstance" Grid.Row="1" Value="1"></local:MapUserControl>
+            <local:MapUserControl x:Name="MapUserControlInstance" MapStatusValues="{Binding}" Grid.Row="1" Value="1"></local:MapUserControl>
             
             
         </Grid>

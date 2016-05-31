@@ -41,7 +41,7 @@ namespace SlamTest
         {
             RefreshSerialDevices();
             List<List<char>> mapStatus = new List<List<char>>();
-            MapUserControlInstance.MapStatusValues= mapStatus;
+            MapUserControlInstance.DataContext = mapStatus;
             for (var i = 0; i<3; i++)
             {
                 List<char> temp = new List<char> {'O', '?', 'O','X'};
