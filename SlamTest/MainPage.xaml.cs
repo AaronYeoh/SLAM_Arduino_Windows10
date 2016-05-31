@@ -40,6 +40,15 @@ namespace SlamTest
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             RefreshSerialDevices();
+            List<List<char>> mapStatus = new List<List<char>>();
+            MapUserControlInstance.MapStatusValues= mapStatus;
+            for (var i = 0; i<3; i++)
+            {
+                List<char> temp = new List<char> {'O', '?', 'O','X'};
+                mapStatus.Add(temp);
+            }
+
+            
         }
 
 

@@ -10,28 +10,21 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBlock Name="SerialReadTextBlock" Grid.Column="0"></TextBlock>
             </Grid>
-            
 
-            <Grid  Grid.Row="2" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-            </Grid>
+
+            <local:MapUserControl x:Name="MapUserControlInstance" Grid.Row="1" Value="1"></local:MapUserControl>
             
-            <TextBlock Grid.Row="3" Name="SerialInfoTextBlock" TextWrapping="Wrap"  FontSize="32" VerticalAlignment="Stretch" >Select Serial Port</TextBlock>
+            
         </Grid>
 
     </Grid>

@@ -1,0 +1,29 @@
+﻿<UserControl
+    x:Class="SlamTest.MapUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SlamTest"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid>
+        <Grid x:Name="MapGrid">
+            <TextBlock Text="{Binding Value}"></TextBlock>
+            <ListView ItemsSource="{Binding MapStatusValues}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding [0]}"></TextBlock>
+                            <TextBlock Text="{Binding [1]}"></TextBlock>
+                            <TextBlock Text="{Binding [2]}"></TextBlock>
+                            <TextBlock Text="{Binding [3}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Grid>
+</UserControl>

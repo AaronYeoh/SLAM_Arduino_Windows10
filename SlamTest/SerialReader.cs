@@ -12,7 +12,7 @@ namespace SlamTest
     class SerialReader
     {
         private DataReader dataReaderObject;
-        private CancellationTokenSource ReadCancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource ReadCancellationTokenSource;
         private SerialDevice _serialPort;
         private string latestString;
         public delegate void CustomEventHandler(object sender, SerialReadEventArgs a);
@@ -34,6 +34,7 @@ namespace SlamTest
             }
         }
 
+        private bool status;
         /// <summary>
         /// - Create a DataReader object
         /// - Create an async task to read from the SerialDevice InputStream
@@ -42,6 +43,7 @@ namespace SlamTest
         /// <param name="e"></param>
         public async void Listen(SerialDevice serialPort)
         {
+            ReadCancellationTokenSource = new CancellationTokenSource();
             _serialPort = serialPort;
             try
             {
@@ -52,8 +54,12 @@ namespace SlamTest
                     // keep reading the serial input
                     while (true)
                     {
-                        latestString = await ReadAsync(ReadCancellationTokenSource.Token);
-                        OnDataReceived(new SerialReadEventArgs(latestString));
+                        status = await ReadAsync(ReadCancellationTokenSource.Token);
+                        if (status == true)
+                        {
+                            status = false;
+                            OnDataReceived(new SerialReadEventArgs(latestString));
+                        }
                     }
                 }
             }
@@ -78,13 +84,13 @@ namespace SlamTest
                 }
             }
         }
-
-        private async Task<string> ReadAsync(CancellationToken cancellationToken)
+        StringBuilder stringBuilder = new StringBuilder();
+        private async Task<bool> ReadAsync(CancellationToken cancellationToken)
         {
             Task<UInt32> loadAsyncTask;
 
-            uint ReadBufferLength = 12;
-
+            uint ReadBufferLength = 1;
+            
             // If task cancellation was requested, comply
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -97,9 +103,21 @@ namespace SlamTest
             // Launch the task and wait
             UInt32 bytesRead = await loadAsyncTask;
 
+            var str = dataReaderObject.ReadString(bytesRead);
 
-            return dataReaderObject.ReadString(bytesRead);
+            if (str.Contains("\n"))
+            {
+                latestString = stringBuilder + str;
+                stringBuilder.Length = 0;
+                return true;
+            }
+            else
+            {
+                stringBuilder.Append(str);
+            }
 
+
+            return false;
         }
 
 
