@@ -42,20 +42,15 @@ namespace SlamTest
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             RefreshSerialDevices();
-            List<List<char>> mapStatus = new List<List<char>>();
-            //MapUserControlInstance.DataContext = mapStatus;
-            for (var i = 0; i<10; i++)
-            {
-                List<char> temp = new List<char> {'O', '?', 'O','X'};
-                mapStatus.Add(temp);
-            }
-            int rows = 24, cols = 40;
+            //int rows = 24, cols = 40;
+            int rows = 50, cols = 50;
+            int scale = 5; // 5cm Real World per pixel
             MapCanvas.Width = cols*50;
             MapCanvas.Height = rows * 50;
             int colWidth = (int)MapCanvas.Width / (2*cols);
             int rowHeight = colWidth;
             
-            BotGrid botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas);
+            BotGrid botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas, scale);
             botGrid.DrawGrid();
 
         }

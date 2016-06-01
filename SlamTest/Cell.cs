@@ -20,22 +20,32 @@ namespace SlamTest
         public int cellX;
         public int cellY;
         public int cellSize;
+        public int cellPosX;
+        public int cellPosY;
 
         private Cell() { }
-        public Cell(int cX, int cY, int size)
+        public Cell(int cX, int cY, int cXPos, int cYPos, int size)
         {
             status = CellStatus.Unknown;
             cellX = cX;
             cellY = cY;
             cellSize = size;
+
+            //Cell's index in array
+            cellPosX = cXPos;
+            cellPosY = cYPos;
         }
         // Explicit value constructor for creating a cell 
-        public Cell(CellStatus x, int cX, int cY, int size)
+        public Cell(CellStatus x, int cX, int cY, int cXPos, int cYPos, int size)
         {
             status = x;
             cellX = cX;
             cellY = cY;
             cellSize = size;
+
+            //Cell's index in array
+            cellPosX = cXPos;
+            cellPosY = cYPos;
         }
 
 

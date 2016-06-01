@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
@@ -16,14 +17,17 @@ namespace SlamTest
         private int _rows, _cols;
         private Canvas _mapCanvas;
         private int _rowHeight, _colWidth;
+        private int _scale;
+        private Cell[,] cells;
 
-        public BotGrid(int rows, int cols, int rowHeight, int colWidth, Canvas mapCanvas)
+        public BotGrid(int rows, int cols, int rowHeight, int colWidth, Canvas mapCanvas, int scale)
         {
             _rows = rows;
             _cols = cols;
             _mapCanvas = mapCanvas;
             _rowHeight = rowHeight;
             _colWidth = colWidth;
+            _scale = scale;
         }
 
         public void DrawGrid()
@@ -43,16 +47,16 @@ namespace SlamTest
                 DrawLine(i*_colWidth, 0, i*_colWidth, ySize, _mapCanvas);
 
             }
-            for (int i = 0; i < _rows; i++)
-            {
-                DrawRectangle(xPos:0, yPos:i * _rowHeight * 2, size:_rowHeight*2, color:Colors.Goldenrod);
-            }
-            for (int i = 0; i < _cols; i++)
-            {
-                var xPosition = i*_colWidth*2;
-                var yPosition = 4*_rowHeight;
-                DrawRectangle(xPos: xPosition, yPos: yPosition, size: _colWidth * 2, color:Colors.Chartreuse);
-            }
+            //for (int i = 0; i < _rows; i++)
+            //{
+            //    DrawRectangle(xPos:0, yPos:i * _rowHeight * 2, size:_rowHeight*2, color:Colors.Goldenrod);
+            //}
+            //for (int i = 0; i < _cols; i++)
+            //{
+            //    var xPosition = i*_colWidth*2;
+            //    var yPosition = 4*_rowHeight;
+            //    DrawRectangle(xPos: xPosition, yPos: yPosition, size: _colWidth * 2, color:Colors.Chartreuse);
+            //}
             CreateCells();
         }
 
@@ -74,35 +78,49 @@ namespace SlamTest
 
         public void CreateCells()
         {
-            Cell[,] cells = new Cell[_rows,_cols];
+            cells = new Cell[_rows,_cols];
             for (int i = 0; i < _rows; i++)
             {
                 for (int j = 0; j < _cols; j++)
                 {
-                    cells[i, j] = new Cell(CellStatus.Unknown, j*_colWidth*2, i * _rowHeight * 2,_colWidth *2);
+                    cells[i, j] = new Cell(CellStatus.Unknown, j*_colWidth*2, i * _rowHeight * 2, i, j ,_colWidth *2);
                 }
             }
-            DrawCells(cells);
+            var cel = cells[0, 0];
+            cel.status = CellStatus.Obstacle;
+            DrawCells();
 
         }
-        public void DrawCells(Cell[,] cells)
+        public void DrawCells()
         {
             foreach (var cell in cells)
             {
                 switch (cell.status)
                 {
                     case CellStatus.Obstacle:
-                        DrawRectangle(cell.cellX, cell.cellY,cell.cellSize, Colors.Navy);
+                        DrawRectangle(cell.cellX, cell.cellY,cell.cellSize, Colors.Navy, cell);
                         break;
                     case CellStatus.Unknown:
-                        DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.Lavender);
+                        DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.DarkGray, cell);
+                        break;
+                    case CellStatus.Clear:
+                        DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.Lavender, cell);
+                        break;
+                    case CellStatus.Covered:
+                        DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.Black, cell);
                         break;
                 }
             }
 
         }
 
-        public void DrawRectangle(int xPos, int yPos, int size, Color color)
+        public bool SetCell(int x, int y)
+        {
+            cells[x,y].status = CellStatus.Clear;
+            return true;
+        }
+
+        public void DrawRectangle(int xPos, int yPos, int size, Color color, Cell cell)
         {
             Rectangle rect = new Rectangle();
             rect.Fill = new SolidColorBrush(color);
@@ -113,9 +131,27 @@ namespace SlamTest
             rect.Stretch = Stretch.UniformToFill;
             rect.HorizontalAlignment = HorizontalAlignment.Left;
             rect.VerticalAlignment = VerticalAlignment.Top;
+            rect.Tag = new int[2] {cell.cellPosX, cell.cellPosY};
             Canvas.SetLeft(rect, xPos);
             Canvas.SetTop(rect, yPos);
+            rect.Tapped += RectOnTapped;
             _mapCanvas.Children.Add(rect);
+        }
+
+        private void RectOnTapped(object sender, TappedRoutedEventArgs tappedRoutedEventArgs)
+        {
+            var rect = sender as Rectangle;
+            var tag = rect?.Tag as int[];
+
+            Bresenham.Line(0,0,tag[0],tag[1], new Bresenham.PlotFunction(SetCell));
+
+            var rects = _mapCanvas.Children.OfType<Rectangle>().ToList();
+            foreach (var rectangle in rects)
+            {
+                _mapCanvas.Children.Remove(rectangle);
+            }
+
+            DrawCells();
         }
     }
 

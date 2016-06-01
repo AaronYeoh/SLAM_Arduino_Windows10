@@ -98,6 +98,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Bresenham.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="BotGrid.cs" />
     <Compile Include="MainPage.xaml.cs">
