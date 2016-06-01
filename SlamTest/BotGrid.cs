@@ -19,7 +19,8 @@ namespace SlamTest
         private int _rowHeight, _colWidth;
         private int _scale;
         private Cell[,] cells;
-
+        private static BotGrid _instance = null;
+        public static BotGrid Instance { get { return _instance; } }
         public BotGrid(int rows, int cols, int rowHeight, int colWidth, Canvas mapCanvas, int scale)
         {
             _rows = rows;
@@ -28,6 +29,7 @@ namespace SlamTest
             _rowHeight = rowHeight;
             _colWidth = colWidth;
             _scale = scale;
+            _instance = this;
         }
 
         public void DrawGrid()
@@ -95,23 +97,28 @@ namespace SlamTest
         {
             foreach (var cell in cells)
             {
-                switch (cell.status)
-                {
-                    case CellStatus.Obstacle:
-                        DrawRectangle(cell.cellX, cell.cellY,cell.cellSize, Colors.Navy, cell);
-                        break;
-                    case CellStatus.Unknown:
-                        DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.DarkGray, cell);
-                        break;
-                    case CellStatus.Clear:
-                        DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.Lavender, cell);
-                        break;
-                    case CellStatus.Covered:
-                        DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.Black, cell);
-                        break;
-                }
+                DrawSingleCell(cell);
             }
 
+        }
+
+        public void DrawSingleCell(Cell cell)
+        {
+            switch (cell.status)
+            {
+                case CellStatus.Obstacle:
+                    DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.Navy, cell);
+                    break;
+                case CellStatus.Unknown:
+                    DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.DarkGray, cell);
+                    break;
+                case CellStatus.Clear:
+                    DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.Lavender, cell);
+                    break;
+                case CellStatus.Covered:
+                    DrawRectangle(cell.cellX, cell.cellY, cell.cellSize, Colors.Black, cell);
+                    break;
+            }
         }
 
         public bool SetCell(int x, int y)
@@ -145,14 +152,16 @@ namespace SlamTest
 
             Bresenham.Line(0,0,tag[0],tag[1], new Bresenham.PlotFunction(SetCell));
             cells[tag[0],tag[1]].status = CellStatus.Obstacle;
-            var rects = _mapCanvas.Children.OfType<Rectangle>().ToList();
-            foreach (var rectangle in rects)
-            {
-                _mapCanvas.Children.Remove(rectangle);
-            }
+            //rect.Fill = new SolidColorBrush(Colors.Navy);
+            //Canvas.SetZIndex(rect,1);
+            //var rects = _mapCanvas.Children.OfType<Rectangle>().ToList();
+            //foreach (var rectangle in rects)
+           // {
+            //    _mapCanvas.Children.Remove(rectangle);
+            //}
 
 
-            DrawCells();
+            //DrawCells();
         }
     }
 

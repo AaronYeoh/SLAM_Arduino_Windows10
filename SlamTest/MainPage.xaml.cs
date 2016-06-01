@@ -39,7 +39,7 @@ namespace SlamTest
             this.InitializeComponent();
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             RefreshSerialDevices();
             //int rows = 24, cols = 40;
