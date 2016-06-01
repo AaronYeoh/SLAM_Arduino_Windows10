@@ -144,12 +144,13 @@ namespace SlamTest
             var tag = rect?.Tag as int[];
 
             Bresenham.Line(0,0,tag[0],tag[1], new Bresenham.PlotFunction(SetCell));
-
+            cells[tag[0],tag[1]].status = CellStatus.Obstacle;
             var rects = _mapCanvas.Children.OfType<Rectangle>().ToList();
             foreach (var rectangle in rects)
             {
                 _mapCanvas.Children.Remove(rectangle);
             }
+
 
             DrawCells();
         }
