@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.SerialCommunication;
+using Windows.Storage.AccessCache;
 using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI;
@@ -37,6 +38,7 @@ namespace SlamTest
         private bool isStopped = true;
         private MapController mapController;
         private BotGrid botGrid;
+        private Windows.Storage.StorageFile file;
         public MainPage()
         {
             this.InitializeComponent();
@@ -128,7 +130,21 @@ namespace SlamTest
 
         private void DataReceivedEventHandler(object sender, SerialReadEventArgs serialReadEventArgs)
         {
+            if (SaveSerialToggleButton.IsChecked.GetValueOrDefault())
+            {
+                SaveToFile(serialReadEventArgs.Message);
+            }
+
             SerialReadTextBlock.Text = serialReadEventArgs.Message;
+        }
+
+        private async void SaveToFile(string str)
+        {
+            if (file != null)
+            {
+                await Windows.Storage.FileIO.AppendTextAsync(file, str);
+            }
+            
         }
 
         private void RefreshButton_OnClick(object sender, RoutedEventArgs e)
@@ -174,6 +190,33 @@ namespace SlamTest
             {
                 //App is running on phone, open general settings
                 bool result2 = await Launcher.LaunchUriAsync(new Uri("ms-settings:"));
+            }
+        }
+
+        private async void SaveSerialToggleButton_OnChecked(object sender, RoutedEventArgs e)
+        {
+            if (SaveSerialToggleButton.IsChecked.GetValueOrDefault())
+            {
+                try
+                {
+                    file = await StorageApplicationPermissions.FutureAccessList.GetFileAsync("Default");
+                }
+                catch
+                {
+                    //exterminate
+                }
+                if (file == null)
+                {
+                    var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+                    savePicker.SuggestedStartLocation =
+                        Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+                    // Dropdown of file types the user can save the file as
+                    savePicker.FileTypeChoices.Add("Plain Text", new List<string>() {".txt"});
+                    // Default file name if the user does not type one in or select a file to replace
+                    savePicker.SuggestedFileName = "705SerialData";
+                    file = await savePicker.PickSaveFileAsync();
+                    StorageApplicationPermissions.FutureAccessList.AddOrReplace("Default", file);
+                }
             }
         }
     }

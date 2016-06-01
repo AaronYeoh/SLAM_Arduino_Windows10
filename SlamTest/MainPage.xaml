@@ -58,7 +58,7 @@
             <AppBarButton Name="StartStopButton" Icon="Play" Label="Start reading Serial Device" IsEnabled="False" ToolTipService.ToolTip="Start reading Serial Device"  Click="StartStopSerialButton_OnClick"></AppBarButton>
 
             <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" ToolTipService.ToolTip="Refresh Serial Devices" Click="RefreshButton_OnClick"></AppBarButton>
-
+            <AppBarToggleButton Name="SaveSerialToggleButton" Icon="Save" Label="Save serial messages to file" Checked="SaveSerialToggleButton_OnChecked"></AppBarToggleButton>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Name="ClearMapButton" Icon="ClearSelection" Label="Reset Map" Click="ClearMapButton_OnClick">
                 </AppBarButton>
@@ -68,7 +68,7 @@
             </CommandBar.SecondaryCommands>
             <CommandBar.Content>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="8" FontSize="18">Serial Device:</TextBlock>
+                    <TextBlock Margin="8" FontSize="18">Device:</TextBlock>
                     <ComboBox Margin="7" MinWidth="150"  Name="SerialList" Background="Bisque" PlaceholderText="Choose serial device"></ComboBox>
                 </StackPanel>
             </CommandBar.Content>
