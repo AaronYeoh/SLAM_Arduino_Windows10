@@ -6,55 +6,38 @@ using System.Threading.Tasks;
 
 namespace SlamTest
 {
+    public enum CellStatus
+    {
+        Unknown,
+        Covered,
+        Obstacle,
+        Clear
+    }
     public class Cell
     {
-        // Properties of the cell to determine state, size, and location
-        bool isAlive;
-        float cellWidth;
-        float cellHeight;
-        float cellX;
-        float cellY;
+        // Properties of the cell to determine state and location
+        public CellStatus status;
+        public int cellX;
+        public int cellY;
+        public int cellSize;
 
-        // Explicit value constructor for creating a cell when clicking on the grid
-        public Cell(bool x, float cW, float cH, float cX, float cY)
+        private Cell() { }
+        public Cell(int cX, int cY, int size)
         {
-            isAlive = x;
-            cellWidth = cW;
-            cellHeight = cH;
+            status = CellStatus.Unknown;
             cellX = cX;
             cellY = cY;
+            cellSize = size;
+        }
+        // Explicit value constructor for creating a cell 
+        public Cell(CellStatus x, int cX, int cY, int size)
+        {
+            status = x;
+            cellX = cX;
+            cellY = cY;
+            cellSize = size;
         }
 
-        // Properties
-        public bool IsAlive
-        {
-            get { return isAlive; }
-            set { isAlive = value; }
-        }
-
-        public float CellHeight
-        {
-            get { return cellHeight; }
-            set { cellHeight = value; }
-        }
-
-        public float CellWidth
-        {
-            get { return cellWidth; }
-            set { cellWidth = value; }
-        }
-
-        public float CellX
-        {
-            get { return cellX; }
-            set { cellX = value; }
-        }
-
-        public float CellY
-        {
-            get { return cellY; }
-            set { cellY = value; }
-        }
 
     }
 }

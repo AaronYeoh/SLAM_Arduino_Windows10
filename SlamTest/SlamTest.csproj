@@ -99,7 +99,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Cell.cs" />
-    <Compile Include="Grid.cs" />
+    <Compile Include="BotGrid.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

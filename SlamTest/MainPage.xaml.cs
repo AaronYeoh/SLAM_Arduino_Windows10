@@ -49,11 +49,14 @@ namespace SlamTest
                 List<char> temp = new List<char> {'O', '?', 'O','X'};
                 mapStatus.Add(temp);
             }
-            int rows = 50, cols = 50;
-            int rowHeight = 10;
-            int colWidth = 10;
+            int rows = 24, cols = 40;
+            MapCanvas.Width = cols*50;
+            MapCanvas.Height = rows * 50;
+            int colWidth = (int)MapCanvas.Width / (2*cols);
+            int rowHeight = colWidth;
             
-            BotGrid.DrawGrid(rows, cols, rowHeight, colWidth, MapCanvas);
+            BotGrid botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas);
+            botGrid.DrawGrid();
 
         }
 

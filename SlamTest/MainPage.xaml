@@ -23,9 +23,9 @@
 
 
             <!--<local:MapUserControl x:Name="MapUserControlInstance" MapStatusValues="{Binding}" Grid.Row="1" Value="1"></local:MapUserControl>-->
-            <Border Grid.Row="1" BorderBrush="Blue" BorderThickness="1">
-                <Viewbox Stretch="Uniform" Width="1000" Height="1000">
-            <Canvas  Name="MapCanvas" Width="1000" Height="1000">
+            <Border Grid.Row="1" BorderBrush="Blue" BorderThickness="1" Margin="15">
+                <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Canvas  Name="MapCanvas" Width="2000" Height="1200">
                 
                
             </Canvas>
