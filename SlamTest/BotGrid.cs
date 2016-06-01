@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,10 @@ namespace SlamTest
             _scale = scale;
             _botPose = botPose;
             _instance = this;
+            _botPose.PropertyChanged += BotPoseOnPropertyChanged;
         }
+
+
 
         public void DrawGrid()
         {
@@ -87,11 +91,13 @@ namespace SlamTest
             {
                 for (int j = 0; j < _cols; j++)
                 {
-                    cells[i, j] = new Cell(CellStatus.Unknown, j*_colWidth*2, i * _rowHeight * 2, i, j ,_colWidth *2);
+                    cells[i, j] = new Cell(CellStatus.Unknown,  i * _rowHeight * 2,j * _colWidth * 2, i, j ,_colWidth *2);
                 }
             }
             var cel = cells[0, 0];
             cel.status = CellStatus.Obstacle;
+            var cel2 = cells[20, 0];
+            cel2.status = CellStatus.Obstacle;
             DrawCells();
 
         }
@@ -102,6 +108,19 @@ namespace SlamTest
                 DrawSingleCell(cell);
             }
 
+        }
+
+        public void RedrawCells()
+        {
+            _botPose.PropertyChanged -= BotPoseOnPropertyChanged;
+            var rects = _mapCanvas.Children.OfType<Rectangle>().ToList();
+            foreach (var rect in rects)
+            {
+                _mapCanvas.Children.Remove(rect);
+            }
+            CreateCells();
+            DrawCells();
+            _botPose.PropertyChanged += BotPoseOnPropertyChanged;
         }
 
         public void DrawSingleCell(Cell cell)
@@ -152,8 +171,14 @@ namespace SlamTest
             var rect = sender as Rectangle;
             var tag = rect?.Tag as int[];
 
-            Bresenham.Line(_botPose.YPosBot/50, _botPose.XPosBot/50,tag[0],tag[1], new Bresenham.PlotFunction(SetCell));
+            Bresenham.Line(_botPose.XPosBot/5, _botPose.YPosBot/5,tag[0],tag[1], new Bresenham.PlotFunction(SetCell));
+            //Bresenham.Line(10, 20, tag[0], tag[1], new Bresenham.PlotFunction(SetCell));
             cells[tag[0],tag[1]].status = CellStatus.Obstacle;
+        }
+
+        private void BotPoseOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            cells[_botPose.XPosBot / 5, _botPose.YPosBot / 5].status = CellStatus.Covered;
         }
     }
 

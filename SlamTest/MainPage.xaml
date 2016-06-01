@@ -30,14 +30,17 @@
                     <RotateTransform Angle="180"></RotateTransform>
                 </Border.RenderTransform>
                 <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <Canvas  Name="MapCanvas" Width="200" Height="120">
-                        <Polygon Name="RobotShape" Points="10,110 60,10 110,110"
-                            Fill="Blue" Opacity="0.65"
-                            Stroke="Black" StrokeThickness="4"
-                            Canvas.Top="{Binding YPosBot, Converter={StaticResource ScaleConverter}, ConverterParameter=1}" 
-                                 Canvas.Left="{Binding XPosBot, Converter={StaticResource ScaleConverter}, ConverterParameter=1}" Canvas.ZIndex="10" RenderTransformOrigin="0.5,0.5">
+                    <Canvas  Name="MapCanvas" Width="2000" Height="1200">
+                        <Polygon Name="RobotShape" Points="0,0 -40,-100 40,-100"
+                            Fill="Blue" Opacity="0.9"
+                            Stroke="Green" StrokeThickness="5"
+                            Canvas.Top="{Binding YPosBot, Converter={StaticResource ScaleConverter}, ConverterParameter=10}" 
+                                 Canvas.Left="{Binding XPosBot, Converter={StaticResource ScaleConverter}, ConverterParameter=10}" 
+                                 Canvas.ZIndex="10" RenderTransformOrigin="0,0">
                             <Polygon.RenderTransform>
-                                <RotateTransform Angle="0"></RotateTransform>
+                                <RotateTransform Angle="{Binding ZAngleBot, 
+                                    Converter={StaticResource ScaleConverter}, ConverterParameter=-1}">
+                                </RotateTransform>
                             </Polygon.RenderTransform>
                         </Polygon>
 
@@ -56,13 +59,13 @@
 
             <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" ToolTipService.ToolTip="Refresh Serial Devices" Click="RefreshButton_OnClick"></AppBarButton>
 
-            <!--<CommandBar.SecondaryCommands>
-                <AppBarButton Icon="Setting" Label="Bluetooth settings">
-                    <Hyperlink NavigateUri="ms-settings:bluetooth">
-                        <Run Text="Settings" />
-                    </Hyperlink>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Name="ClearMapButton" Icon="ClearSelection" Label="Reset Map" Click="ClearMapButton_OnClick">
                 </AppBarButton>
-            </CommandBar.SecondaryCommands>-->
+                <AppBarButton Name="BluetoothButton" Icon="Setting" Label="Bluetooth settings" Click="BluetoothButton_OnClick">
+    
+                </AppBarButton>
+            </CommandBar.SecondaryCommands>
             <CommandBar.Content>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="8" FontSize="18">Serial Device:</TextBlock>

@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
+using Windows.System;
 using Windows.UI;
 using Windows.UI.Xaml.Shapes;
 
@@ -35,6 +36,7 @@ namespace SlamTest
         private DeviceInformation selectedSerialDevice;
         private bool isStopped = true;
         private MapController mapController;
+        private BotGrid botGrid;
         public MainPage()
         {
             this.InitializeComponent();
@@ -54,9 +56,9 @@ namespace SlamTest
             mapController = new MapController();
 
             RobotShape.DataContext = mapController.BotPose;
-            
 
-            BotGrid botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas, scale, mapController.BotPose);
+
+            botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas, scale, mapController.BotPose);
             botGrid.DrawGrid();
             
         }
@@ -157,6 +159,21 @@ namespace SlamTest
             if (tempInfo.Count == 0)
             {
                 SerialList.PlaceholderText = "No serial devices available";
+            }
+        }
+
+        private void ClearMapButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            botGrid.RedrawCells();
+        }
+
+        private async void BluetoothButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            bool result = await Launcher.LaunchUriAsync(new Uri("ms-settings:bluetooth"));
+            if (!result)
+            {
+                //App is running on phone, open general settings
+                bool result2 = await Launcher.LaunchUriAsync(new Uri("ms-settings:"));
             }
         }
     }

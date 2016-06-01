@@ -54,7 +54,7 @@ namespace SlamTest
                 }
                 else
                 {
-                    if (lowerStatePreviouslyDetected > threshold)
+                    if ((_status != CellStatus.Covered) && (lowerStatePreviouslyDetected > threshold))
                     {
                         _status = value;
                         lowerStatePreviouslyDetected = 0;
