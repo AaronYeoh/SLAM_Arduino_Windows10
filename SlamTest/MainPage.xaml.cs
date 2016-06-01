@@ -16,9 +16,13 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.SerialCommunication;
+using Windows.Graphics.Printing;
+using Windows.Graphics.Printing.OptionDetails;
 using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.Xaml.Printing;
 using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -37,6 +41,8 @@ namespace SlamTest
         private bool isStopped = true;
         private MapController mapController;
         private BotGrid botGrid;
+        private PrintDocument Document = new PrintDocument();
+        private IPrintDocumentSource printDocumentSource;
         public MainPage()
         {
             this.InitializeComponent();
@@ -60,11 +66,11 @@ namespace SlamTest
 
             botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas, scale, mapController.BotPose, mapController.obstaclePositons);
             botGrid.DrawGrid();
-            
+
+
+            registerForPrinting();
+
         }
-
-        
-
 
 
         private void SerialList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -97,8 +103,12 @@ namespace SlamTest
             isStopped = true;
             StartStopButton.Icon = new SymbolIcon(Symbol.Play);
             serialReader.CancelReadTask();
-            serialReader.RaiseDataReceivedEvent -= DataReceivedEventHandler;
-            serialReader.RaiseDataReceivedEvent -= mapController.DataReceivedEventHandler;
+            try
+            {
+                serialReader.RaiseDataReceivedEvent -= DataReceivedEventHandler;
+                serialReader.RaiseDataReceivedEvent -= mapController.DataReceivedEventHandler;
+            }
+            catch { }
         }
 
         private async Task StartSerialRead()
@@ -176,5 +186,95 @@ namespace SlamTest
                 bool result2 = await Launcher.LaunchUriAsync(new Uri("ms-settings:"));
             }
         }
+
+        private async void PrintButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PrintManager.ShowPrintUIAsync();
+            }
+            catch { }
+        }
+
+
+
+        #region Print  Test
+        private void registerForPrinting()
+        {
+            PrintManager PrintManager = PrintManager.GetForCurrentView();
+            PrintManager.PrintTaskRequested += PrintManager_TaskRequested;
+            Document.Paginate += Paginate;
+            Document.GetPreviewPage += GetPrintPreviewPage;
+            Document.AddPage(MapCanvas);
+            Document.AddPages += DocumentOnAddPages;
+            printDocumentSource = Document.DocumentSource;
+        }
+
+        private void DocumentOnAddPages(object sender, AddPagesEventArgs addPagesEventArgs)
+        {
+            // Loop over all of the preview pages and add each one to  add each page to be printied
+
+            // We should have all pages ready at this point...
+            Document.AddPage(MapCanvas);
+
+
+            PrintDocument printDoc = (PrintDocument)sender;
+
+            // Indicate that all of the print pages have been provided
+            printDoc.AddPagesComplete();
+        }
+
+        private void GetPrintPreviewPage(object sender, GetPreviewPageEventArgs e)
+        {
+            this.Document.SetPreviewPage(e.PageNumber, MapCanvas as UIElement);
+
+        }
+
+        private void Paginate(object sender, PaginateEventArgs e)
+        {
+            Document.SetPreviewPageCount(1, PreviewPageCountType.Final);
+        }
+
+        private void PrintManager_TaskRequested(PrintManager sender, PrintTaskRequestedEventArgs args)
+        {
+            PrintTask printTask = null;
+            //PrintTask printTask = args.Request.CreatePrintTask("SLAM MECHENG 705 University of Auckland",
+            //  PrintTaskSourceRequested);
+            printTask = args.Request.CreatePrintTask("C# Printing SDK Sample", sourceRequested =>
+            {
+                sourceRequested.SetSource(printDocumentSource);
+            });
+            printTask.Completed += PrintTaskOnCompleted;
+            //configurePrintTaskOptionDetails(printTask);
+        }
+
+        //private void configurePrintTaskOptionDetails(PrintTask printTask)
+        //{
+        //    PrintTaskOptionDetails details = PrintTaskOptionDetails.GetFromPrintTaskOptions(printTask.Options);
+        //    IList<string> displayedOptions = details.DisplayedOptions;
+
+        //    PrintCustomItemListOptionDetails fit = details.CreateItemListOption("Fit", "Fit to Page");
+        //    fit.AddItem("Scale", "Scale to Fit");
+        //    fit.AddItem("Crop", "Crop to Fit");
+        //    displayedOptions.Add("Fit");
+        //    //details.OptionChanged += DetailsOnOptionChanged;
+        //}
+
+        private void DetailsOnOptionChanged(PrintTaskOptionDetails sender, PrintTaskOptionChangedEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        //private void PrintTaskSourceRequested(PrintTaskSourceRequestedArgs args)
+        //{
+        //    args.SetSource(this.Document.DocumentSource);
+
+        //}
+
+        private void PrintTaskOnCompleted(PrintTask sender, PrintTaskCompletedEventArgs args)
+        {
+            //Nothing
+        }
+#endregion
     }
 }

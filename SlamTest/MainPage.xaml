@@ -65,6 +65,9 @@
                 <AppBarButton Name="BluetoothButton" Icon="Setting" Label="Bluetooth settings" Click="BluetoothButton_OnClick">
     
                 </AppBarButton>
+                <!--<AppBarButton Name="PrintButton" Icon="Setting" Label="Print" Click="PrintButton_OnClick">
+
+                </AppBarButton>-->
             </CommandBar.SecondaryCommands>
             <CommandBar.Content>
                 <StackPanel Orientation="Horizontal">
