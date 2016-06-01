@@ -22,14 +22,22 @@
             </Grid>
 
 
-            <local:MapUserControl x:Name="MapUserControlInstance" MapStatusValues="{Binding}" Grid.Row="1" Value="1"></local:MapUserControl>
-            
-            
+            <!--<local:MapUserControl x:Name="MapUserControlInstance" MapStatusValues="{Binding}" Grid.Row="1" Value="1"></local:MapUserControl>-->
+            <Border Grid.Row="1" BorderBrush="Blue" BorderThickness="1">
+                <Viewbox Stretch="Uniform" Width="1000" Height="1000">
+            <Canvas  Name="MapCanvas" Width="1000" Height="1000">
+                
+               
+            </Canvas>
+                </Viewbox>
+            </Border>
+
+
         </Grid>
 
     </Grid>
 <Page.TopAppBar>
-        <CommandBar>
+        <CommandBar Visibility="Collapsed">
             <AppBarButton Name="StartStopButton" Icon="Play" Label="Start reading Serial Device" IsEnabled="False" ToolTipService.ToolTip="Start reading Serial Device"  Click="StartStopSerialButton_OnClick"></AppBarButton>
 
             <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" ToolTipService.ToolTip="Refresh Serial Devices" Click="RefreshButton_OnClick"></AppBarButton>

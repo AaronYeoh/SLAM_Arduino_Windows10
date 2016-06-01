@@ -8,19 +8,44 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style x:Key="NonGridViewItemStyle" TargetType="GridViewItem">
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Grid>
         <Grid x:Name="MapGrid">
             <TextBlock Text="{Binding Value}"></TextBlock>
-            <ListView ItemsSource="{Binding MapStatusValues}">
+            <Canvas Name="MapCanvas"></Canvas>
+            <ListView ItemsSource="{Binding MapStatusValues}" Margin="0" Padding="0" IsEnabled="False">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Opacity" Value="1"></Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
+                        <GridView ItemsSource="{Binding}" Margin="0" Padding="0" IsEnabled="False">
+                            <GridView.ItemContainerStyle>
+                                <Style TargetType="GridViewItem">
+                                    <Setter Property="Opacity" Value="1"></Setter>
+                                </Style>
+                            </GridView.ItemContainerStyle>
+                            <GridView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="AntiqueWhite">
+                                    <TextBlock Text="{Binding}" ></TextBlock>
+                                        </Border>
+                                </DataTemplate>
+                            </GridView.ItemTemplate>
+                            <!--<StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding [0]}"></TextBlock>
                             <TextBlock Text="{Binding [1]}"></TextBlock>
                             <TextBlock Text="{Binding [2]}"></TextBlock>
-                            <TextBlock Text="{Binding [3]}"></TextBlock>
-                        </StackPanel>
+                            <TextBlock Text="{Binding [3]}"></TextBlock>-->
+                        </GridView>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

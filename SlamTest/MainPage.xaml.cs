@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
+using Windows.UI;
+using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -41,15 +43,21 @@ namespace SlamTest
         {
             RefreshSerialDevices();
             List<List<char>> mapStatus = new List<List<char>>();
-            MapUserControlInstance.DataContext = mapStatus;
-            for (var i = 0; i<3; i++)
+            //MapUserControlInstance.DataContext = mapStatus;
+            for (var i = 0; i<10; i++)
             {
                 List<char> temp = new List<char> {'O', '?', 'O','X'};
                 mapStatus.Add(temp);
             }
-
+            int rows = 50, cols = 50;
+            int rowHeight = 10;
+            int colWidth = 10;
             
+            BotGrid.DrawGrid(rows, cols, rowHeight, colWidth, MapCanvas);
+
         }
+
+        
 
 
 
