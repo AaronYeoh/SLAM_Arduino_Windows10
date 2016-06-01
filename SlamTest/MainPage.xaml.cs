@@ -58,7 +58,7 @@ namespace SlamTest
             RobotShape.DataContext = mapController.BotPose;
 
 
-            botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas, scale, mapController.BotPose);
+            botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas, scale, mapController.BotPose, mapController.obstaclePositons);
             botGrid.DrawGrid();
             
         }

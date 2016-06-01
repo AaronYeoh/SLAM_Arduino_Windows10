@@ -21,9 +21,10 @@ namespace SlamTest
         private int _scale;
         private Cell[,] cells;
         private RobotPose _botPose;
+        private ObstaclePositions _obstaclePositions;
         private static BotGrid _instance = null;
         public static BotGrid Instance { get { return _instance; } }
-        public BotGrid(int rows, int cols, int rowHeight, int colWidth, Canvas mapCanvas, int scale, RobotPose botPose)
+        public BotGrid(int rows, int cols, int rowHeight, int colWidth, Canvas mapCanvas, int scale, RobotPose botPose, ObstaclePositions obstaclePositions)
         {
             _rows = rows;
             _cols = cols;
@@ -33,9 +34,16 @@ namespace SlamTest
             _scale = scale;
             _botPose = botPose;
             _instance = this;
+            _obstaclePositions = obstaclePositions;
+            _obstaclePositions.PropertyChanged += ObstaclePositionsOnPropertyChanged;
             _botPose.PropertyChanged += BotPoseOnPropertyChanged;
         }
 
+        private void ObstaclePositionsOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            var obsPos = sender as ObstaclePositions;
+            AddNewObstacleReadings(obsPos.listOfObstacles);
+        }
 
 
         public void DrawGrid()
@@ -174,6 +182,24 @@ namespace SlamTest
             Bresenham.Line(_botPose.XPosBot/5, _botPose.YPosBot/5,tag[0],tag[1], new Bresenham.PlotFunction(SetCell));
             //Bresenham.Line(10, 20, tag[0], tag[1], new Bresenham.PlotFunction(SetCell));
             cells[tag[0],tag[1]].status = CellStatus.Obstacle;
+        }
+
+        public void AddNewObstacleReadings(List<int[]> list)
+        {
+            foreach (var obstacle in list)
+            {
+                try
+                {
+                    AddNewObstacleReading(obstacle[0]/5, obstacle[1]/5);
+                }
+                catch { }
+            }
+        }
+        private void AddNewObstacleReading(int x, int y)
+        {
+            Bresenham.Line(_botPose.XPosBot / 5, _botPose.YPosBot / 5, x, y, new Bresenham.PlotFunction(SetCell));
+            //Bresenham.Line(10, 20, tag[0], tag[1], new Bresenham.PlotFunction(SetCell));
+            cells[x, y].status = CellStatus.Obstacle;
         }
 
         private void BotPoseOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
