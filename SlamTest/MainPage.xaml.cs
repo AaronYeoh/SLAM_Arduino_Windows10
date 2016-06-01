@@ -34,6 +34,7 @@ namespace SlamTest
         private DeviceInformationCollection tempInfo;
         private DeviceInformation selectedSerialDevice;
         private bool isStopped = true;
+        private MapController mapController;
         public MainPage()
         {
             this.InitializeComponent();
@@ -49,10 +50,15 @@ namespace SlamTest
             MapCanvas.Height = rows * 50;
             int colWidth = (int)MapCanvas.Width / (2*cols);
             int rowHeight = colWidth;
-            
-            BotGrid botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas, scale);
-            botGrid.DrawGrid();
 
+            mapController = new MapController();
+
+            RobotShape.DataContext = mapController.BotPose;
+            
+
+            BotGrid botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas, scale, mapController.BotPose);
+            botGrid.DrawGrid();
+            
         }
 
         
@@ -89,7 +95,8 @@ namespace SlamTest
             isStopped = true;
             StartStopButton.Icon = new SymbolIcon(Symbol.Play);
             serialReader.CancelReadTask();
-            serialReader.RaiseDataReceivedEvent -= SerialReaderOnRaiseDataReceivedEvent;
+            serialReader.RaiseDataReceivedEvent -= DataReceivedEventHandler;
+            serialReader.RaiseDataReceivedEvent -= mapController.DataReceivedEventHandler;
         }
 
         private async Task StartSerialRead()
@@ -107,7 +114,8 @@ namespace SlamTest
                 serialDevice.BaudRate = 115200;
                 serialDevice.IsDataTerminalReadyEnabled = true;
                 serialReader.Listen(serialDevice);
-                serialReader.RaiseDataReceivedEvent += SerialReaderOnRaiseDataReceivedEvent;
+                serialReader.RaiseDataReceivedEvent += DataReceivedEventHandler;
+                serialReader.RaiseDataReceivedEvent += mapController.DataReceivedEventHandler;
             }
             else
             {
@@ -116,7 +124,7 @@ namespace SlamTest
             }
         }
 
-        private void SerialReaderOnRaiseDataReceivedEvent(object sender, SerialReadEventArgs serialReadEventArgs)
+        private void DataReceivedEventHandler(object sender, SerialReadEventArgs serialReadEventArgs)
         {
             SerialReadTextBlock.Text = serialReadEventArgs.Message;
         }

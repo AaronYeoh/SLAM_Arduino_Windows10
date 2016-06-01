@@ -19,9 +19,10 @@ namespace SlamTest
         private int _rowHeight, _colWidth;
         private int _scale;
         private Cell[,] cells;
+        private RobotPose _botPose;
         private static BotGrid _instance = null;
         public static BotGrid Instance { get { return _instance; } }
-        public BotGrid(int rows, int cols, int rowHeight, int colWidth, Canvas mapCanvas, int scale)
+        public BotGrid(int rows, int cols, int rowHeight, int colWidth, Canvas mapCanvas, int scale, RobotPose botPose)
         {
             _rows = rows;
             _cols = cols;
@@ -29,6 +30,7 @@ namespace SlamTest
             _rowHeight = rowHeight;
             _colWidth = colWidth;
             _scale = scale;
+            _botPose = botPose;
             _instance = this;
         }
 
@@ -150,18 +152,8 @@ namespace SlamTest
             var rect = sender as Rectangle;
             var tag = rect?.Tag as int[];
 
-            Bresenham.Line(0,0,tag[0],tag[1], new Bresenham.PlotFunction(SetCell));
+            Bresenham.Line(_botPose.YPosBot/50, _botPose.XPosBot/50,tag[0],tag[1], new Bresenham.PlotFunction(SetCell));
             cells[tag[0],tag[1]].status = CellStatus.Obstacle;
-            //rect.Fill = new SolidColorBrush(Colors.Navy);
-            //Canvas.SetZIndex(rect,1);
-            //var rects = _mapCanvas.Children.OfType<Rectangle>().ToList();
-            //foreach (var rectangle in rects)
-           // {
-            //    _mapCanvas.Children.Remove(rectangle);
-            //}
-
-
-            //DrawCells();
         }
     }
 

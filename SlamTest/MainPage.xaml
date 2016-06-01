@@ -6,7 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
+<Page.Resources>
+    <local:ScalingConverter x:Key="ScaleConverter"></local:ScalingConverter>
+</Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid>
             <Grid.RowDefinitions>
@@ -28,10 +30,19 @@
                     <RotateTransform Angle="180"></RotateTransform>
                 </Border.RenderTransform>
                 <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Canvas  Name="MapCanvas" Width="2000" Height="1200">
-                
-               
-            </Canvas>
+                    <Canvas  Name="MapCanvas" Width="200" Height="120">
+                        <Polygon Name="RobotShape" Points="10,110 60,10 110,110"
+                            Fill="Blue" Opacity="0.65"
+                            Stroke="Black" StrokeThickness="4"
+                            Canvas.Top="{Binding YPosBot, Converter={StaticResource ScaleConverter}, ConverterParameter=1}" 
+                                 Canvas.Left="{Binding XPosBot, Converter={StaticResource ScaleConverter}, ConverterParameter=1}" Canvas.ZIndex="10" RenderTransformOrigin="0.5,0.5">
+                            <Polygon.RenderTransform>
+                                <RotateTransform Angle="0"></RotateTransform>
+                            </Polygon.RenderTransform>
+                        </Polygon>
+
+
+                    </Canvas>
                 </Viewbox>
             </Border>
 
@@ -39,12 +50,12 @@
         </Grid>
 
     </Grid>
-<Page.TopAppBar>
-        <CommandBar Visibility="Collapsed">
+    <Page.TopAppBar>
+        <CommandBar>
             <AppBarButton Name="StartStopButton" Icon="Play" Label="Start reading Serial Device" IsEnabled="False" ToolTipService.ToolTip="Start reading Serial Device"  Click="StartStopSerialButton_OnClick"></AppBarButton>
 
             <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" ToolTipService.ToolTip="Refresh Serial Devices" Click="RefreshButton_OnClick"></AppBarButton>
-            
+
             <!--<CommandBar.SecondaryCommands>
                 <AppBarButton Icon="Setting" Label="Bluetooth settings">
                     <Hyperlink NavigateUri="ms-settings:bluetooth">
@@ -55,12 +66,12 @@
             <CommandBar.Content>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="8" FontSize="18">Serial Device:</TextBlock>
-                <ComboBox Margin="7" MinWidth="150"  Name="SerialList" Background="Bisque" PlaceholderText="Choose serial device"></ComboBox>
+                    <ComboBox Margin="7" MinWidth="150"  Name="SerialList" Background="Bisque" PlaceholderText="Choose serial device"></ComboBox>
                 </StackPanel>
             </CommandBar.Content>
 
 
-    </CommandBar>
-</Page.TopAppBar>
+        </CommandBar>
+    </Page.TopAppBar>
 
 </Page>
