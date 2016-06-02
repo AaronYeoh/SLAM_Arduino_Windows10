@@ -1,0 +1,4 @@
+MainPackage=C:\Test\SlamTest\SlamTest\bin\ARM\Debug\SlamTest_1.0.3.0_ARM_Debug.appx
+SymbolPackage=C:\Test\SlamTest\SlamTest\AppPackages\SlamTest_1.0.3.0_Debug_Test\SlamTest_1.0.3.0_ARM_Debug.appxsym
+ResourcePack=C:\Test\SlamTest\SlamTest\bin\ARM\Debug\SlamTest_1.0.3.0_scale-100.appx
+ResourcePack=C:\Test\SlamTest\SlamTest\bin\ARM\Debug\SlamTest_1.0.3.0_scale-400.appx

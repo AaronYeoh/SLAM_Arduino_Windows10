@@ -1,0 +1,2 @@
+MainPackage=C:\Test\SlamTest\SlamTest\bin\x64\Debug\SlamTest_1.0.3.0_x64_Debug.appx
+SymbolPackage=C:\Test\SlamTest\SlamTest\AppPackages\SlamTest_1.0.3.0_Debug_Test\SlamTest_1.0.3.0_x64_Debug.appxsym
