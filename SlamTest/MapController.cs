@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.ViewManagement;
 using Newtonsoft.Json;
 using SlamTest.Annotations;
 
@@ -12,32 +13,41 @@ namespace SlamTest
 {
     public class MapController
     {
+        private string oldMessage="";
         public RobotPose BotPose = new RobotPose();
         public string message;
         public ObstaclePositions obstaclePositons = new ObstaclePositions();
 
         public void DataReceivedEventHandler(object sender, SerialReadEventArgs serialReadEventArgs)
         {
-            var text = serialReadEventArgs.Message;
-            try
+            var text = serialReadEventArgs.Message.Trim();
+            if (text.StartsWith("{") && text.EndsWith("}")) //Check if is a json-like string. Avoid exceptions.
             {
-                var obj = JsonConvert.DeserializeObject<RobotSensorModel>(text);
-
-                BotPose.Enabled = obj.Enabled;
-                BotPose.XPosBot = obj.xPos;
-                BotPose.YPosBot = obj.yPos;
-                BotPose.ZAngleBot = obj.zAng;
-                
-
-
-                if (obj.Enabled)
+                try
                 {
-                    UpdateObstaclePositions(obj);
+                    var obj = JsonConvert.DeserializeObject<RobotSensorModel>(text);
+
+                    BotPose.Enabled = obj.Enabled;
+                    BotPose.XPosBot = (int) obj.xPos;
+                    BotPose.YPosBot = (int) obj.yPos;
+                    BotPose.ZAngleBot = (int) obj.zAng;
+
+                    if (obj.message != oldMessage)
+                    {
+                        ApplicationView applicationView = ApplicationView.GetForCurrentView();
+                        applicationView.Title = obj.message;
+                        oldMessage = obj.message;
+                    }
+
+                    if (obj.Enabled)
+                    {
+                        UpdateObstaclePositions(obj);
+                    }
                 }
-            }
-            catch
-            {
-                //exterminate}
+                catch
+                {
+                    //exterminate}
+                }
             }
         }
 

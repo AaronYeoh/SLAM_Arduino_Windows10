@@ -8,9 +8,9 @@ namespace SlamTest
 {
     class RobotSensorModel
     {
-            public int xPos { get; set; }
-            public int yPos { get; set; }
-            public int zAng { get; set; }
+            public float xPos { get; set; }
+            public float yPos { get; set; }
+            public float zAng { get; set; }
             public double sonar { get; set; }
             public double leftB { get; set; }
             public double rightB { get; set; }

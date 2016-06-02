@@ -138,7 +138,7 @@ namespace SlamTest
 
         public bool SetCell(int x, int y)
         {
-            cells[x,y].status = CellStatus.Clear;
+            cells[x, y].status = CellStatus.Clear;
             return true;
         }
 
@@ -183,9 +183,12 @@ namespace SlamTest
         }
         private void AddNewObstacleReading(int x, int y)
         {
-            Bresenham.Line(_botPose.XPosBot / 5, _botPose.YPosBot / 5, x, y, new Bresenham.PlotFunction(SetCell));
-            //Bresenham.Line(10, 20, tag[0], tag[1], new Bresenham.PlotFunction(SetCell));
-            cells[x, y].status = CellStatus.Obstacle;
+            if (x > 0 && x < _cols && y > 0 && y < _rows)
+            {
+                Bresenham.Line(_botPose.XPosBot/5, _botPose.YPosBot/5, x, y, new Bresenham.PlotFunction(SetCell));
+                //Bresenham.Line(10, 20, tag[0], tag[1], new Bresenham.PlotFunction(SetCell));
+                cells[x, y].status = CellStatus.Obstacle;
+            }
         }
 
         private void BotPoseOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

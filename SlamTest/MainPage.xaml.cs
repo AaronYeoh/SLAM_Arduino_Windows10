@@ -20,6 +20,7 @@ using Windows.Storage.AccessCache;
 using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -82,7 +83,11 @@ namespace SlamTest
         SerialReader serialReader = new SerialReader();
         private async void StartStopSerialButton_OnClick(object sender, RoutedEventArgs e)
         {
-            await StartStopSerialRead();
+            try
+            {
+                await StartStopSerialRead();
+            }
+            catch { StopSerialRead();}
         }
 
         private async Task StartStopSerialRead()
@@ -92,10 +97,10 @@ namespace SlamTest
                 await StartSerialRead();
             }
             else
-            {
+            {   
                 StopSerialRead();
             }
-        }
+        }    
 
         private void StopSerialRead()
         {
@@ -120,21 +125,33 @@ namespace SlamTest
             ToolTip toolTip = new ToolTip();
             toolTip.Content = "Stop reading Serial Device";
             ToolTipService.SetToolTip(StartStopButton, toolTip);
-
-            var serialDevice = await SerialDevice.FromIdAsync(selectedSerialDevice.Id);
-
-            if (serialDevice != null)
+            try
             {
-                serialDevice.BaudRate = 115200;
-                serialDevice.IsDataTerminalReadyEnabled = true;
-                serialReader.Listen(serialDevice);
-                serialReader.RaiseDataReceivedEvent += DataReceivedEventHandler;
-                serialReader.RaiseDataReceivedEvent += mapController.DataReceivedEventHandler;
+                var serialDevice = await SerialDevice.FromIdAsync(selectedSerialDevice.Id);
+
+                if (serialDevice != null)
+                {
+                    serialDevice.BaudRate = 115200;
+                    serialDevice.IsDataTerminalReadyEnabled = true;
+                    serialReader.Listen(serialDevice);
+                    serialReader.RaiseDataReceivedEvent += DataReceivedEventHandler;
+                    serialReader.RaiseDataReceivedEvent += mapController.DataReceivedEventHandler;
+                }
+                else
+                {
+                    //The serial device doesn't work.
+                    RefreshSerialDevices();
+                    ApplicationView applicationView = ApplicationView.GetForCurrentView();
+                    applicationView.Title = "Failed to read from device";
+                }
             }
-            else
+            catch (Exception e)
             {
                 //The serial device doesn't work.
                 RefreshSerialDevices();
+
+                ApplicationView applicationView = ApplicationView.GetForCurrentView();
+                applicationView.Title = e.Message;
             }
         }
 
@@ -144,7 +161,6 @@ namespace SlamTest
             {
                 SaveToFile(serialReadEventArgs.Message);
             }
-
             SerialReadTextBlock.Text = serialReadEventArgs.Message;
         }
 
@@ -158,7 +174,7 @@ namespace SlamTest
                 }
                 catch
                 {
-                    await GetFileReference();
+                    file = null; // make user choose another file
                 }
             }
             
