@@ -16,7 +16,7 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <TextBlock Name="SerialReadTextBlock" Grid.Column="0"></TextBlock>
+                <TextBlock Name="SerialReadTextBlock" Grid.Column="0" TextWrapping="Wrap"></TextBlock>
             </Grid>
 
 

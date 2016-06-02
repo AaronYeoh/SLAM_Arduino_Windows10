@@ -15,6 +15,7 @@ namespace SlamTest
             public double leftB { get; set; }
             public double rightB { get; set; }
             public string message { get; set; }
+            public bool Enabled { get; set; }
 
     }
 }

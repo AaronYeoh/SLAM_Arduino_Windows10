@@ -62,7 +62,6 @@ namespace SlamTest
 
             botGrid = new BotGrid(rows, cols, rowHeight, colWidth, MapCanvas, scale, mapController.BotPose, mapController.obstaclePositons);
             botGrid.DrawGrid();
-            
         }
 
         
@@ -153,7 +152,14 @@ namespace SlamTest
         {
             if (file != null)
             {
-                await Windows.Storage.FileIO.AppendTextAsync(file, str);
+                try
+                {
+                    await Windows.Storage.FileIO.AppendTextAsync(file, str);
+                }
+                catch
+                {
+                    await GetFileReference();
+                }
             }
             
         }
@@ -205,6 +211,11 @@ namespace SlamTest
         }
 
         private async void SaveSerialToggleButton_OnChecked(object sender, RoutedEventArgs e)
+        {
+            await GetFileReference();
+        }
+
+        private async Task GetFileReference()
         {
             if (SaveSerialToggleButton.IsChecked.GetValueOrDefault())
             {

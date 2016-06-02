@@ -63,16 +63,6 @@ namespace SlamTest
                 DrawLine(i*_colWidth, 0, i*_colWidth, ySize, _mapCanvas);
 
             }
-            //for (int i = 0; i < _rows; i++)
-            //{
-            //    DrawRectangle(xPos:0, yPos:i * _rowHeight * 2, size:_rowHeight*2, color:Colors.Goldenrod);
-            //}
-            //for (int i = 0; i < _cols; i++)
-            //{
-            //    var xPosition = i*_colWidth*2;
-            //    var yPosition = 4*_rowHeight;
-            //    DrawRectangle(xPos: xPosition, yPos: yPosition, size: _colWidth * 2, color:Colors.Chartreuse);
-            //}
             CreateCells();
         }
 
@@ -102,10 +92,6 @@ namespace SlamTest
                     cells[i, j] = new Cell(CellStatus.Unknown,  i * _rowHeight * 2,j * _colWidth * 2, i, j ,_colWidth *2);
                 }
             }
-            var cel = cells[0, 0];
-            cel.status = CellStatus.Obstacle;
-            var cel2 = cells[20, 0];
-            cel2.status = CellStatus.Obstacle;
             DrawCells();
 
         }
@@ -204,7 +190,10 @@ namespace SlamTest
 
         private void BotPoseOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            cells[_botPose.XPosBot / 5, _botPose.YPosBot / 5].status = CellStatus.Covered;
+            if (_botPose.Enabled)
+            {
+                cells[_botPose.XPosBot/5, _botPose.YPosBot/5].status = CellStatus.Covered;
+            }
         }
     }
 

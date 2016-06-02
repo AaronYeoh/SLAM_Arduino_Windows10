@@ -23,12 +23,17 @@ namespace SlamTest
             {
                 var obj = JsonConvert.DeserializeObject<RobotSensorModel>(text);
 
+                BotPose.Enabled = obj.Enabled;
                 BotPose.XPosBot = obj.xPos;
                 BotPose.YPosBot = obj.yPos;
                 BotPose.ZAngleBot = obj.zAng;
+                
 
 
-                UpdateObstaclePositions(obj);
+                if (obj.Enabled)
+                {
+                    UpdateObstaclePositions(obj);
+                }
             }
             catch
             {
@@ -38,23 +43,32 @@ namespace SlamTest
 
         private void UpdateObstaclePositions(RobotSensorModel obj)
         {
+            List<int[]> listOfObstacles = new List<int[]>();
             var angle = MathH.DegToRad(BotPose.ZAngleBot);
 
-            var frontObjectXPosition = BotPose.XPosBot + Math.Sin(angle) * obj.sonar;
-            var frontObjectYPosition = BotPose.YPosBot + Math.Cos(angle) * obj.sonar;
-
-
-            var leftObjectXPosition = BotPose.XPosBot + Math.Cos(angle)*obj.leftB;
-            var leftObjectYPosition = BotPose.YPosBot - Math.Sin(angle)*obj.leftB;
-
-            var rightObjectXPosition = BotPose.XPosBot - Math.Cos(angle)*obj.rightB;
-            var rightObjectYPosition = BotPose.YPosBot + Math.Sin(angle)*obj.rightB;
-            List<int[]> listOfObstacles = new List<int[]>
+            if (obj.sonar < 198 && obj.sonar > 0.0)
             {
-                new int[] {(int) frontObjectXPosition, (int) frontObjectYPosition},
-                new int[] {(int) leftObjectXPosition, (int) leftObjectYPosition},
-                new int[] {(int) rightObjectXPosition, (int) rightObjectYPosition}
-            };
+                var frontObjectXPosition = BotPose.XPosBot + Math.Sin(angle)*obj.sonar;
+                var frontObjectYPosition = BotPose.YPosBot + Math.Cos(angle)*obj.sonar;
+                listOfObstacles.Add(new int[] {(int) frontObjectXPosition, (int) frontObjectYPosition});
+            }
+            if (obj.leftB < 80.0 && obj.leftB > 0.0)
+            {
+                var leftObjectXPosition = BotPose.XPosBot + Math.Cos(angle)*obj.leftB;
+                var leftObjectYPosition = BotPose.YPosBot - Math.Sin(angle)*obj.leftB;
+                listOfObstacles.Add(new int[] {(int) leftObjectXPosition, (int) leftObjectYPosition});
+            }
+            if (obj.rightB < 80.0 && obj.rightB > 0.0)
+            {
+                var rightObjectXPosition = BotPose.XPosBot - Math.Cos(angle)*obj.rightB;
+                var rightObjectYPosition = BotPose.YPosBot + Math.Sin(angle)*obj.rightB;
+                listOfObstacles.Add(new int[] {(int) rightObjectXPosition, (int) rightObjectYPosition});
+            }
+            
+                
+                
+                
+            
             obstaclePositons.listOfObstacles = listOfObstacles;
 
         }
@@ -130,6 +144,8 @@ namespace SlamTest
                 OnPropertyChanged();
             }
         }
+
+        public bool Enabled { get; set; }
 
 
         [NotifyPropertyChangedInvocator]
