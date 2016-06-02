@@ -73,7 +73,11 @@ namespace SlamTest
         {
             StartStopButton.IsEnabled = true;
             selectedSerialDevice = tempInfo[SerialList.SelectedIndex];
-            StopSerialRead();
+            //Prevent this from firing too early and getting null exception
+            if (!isStopped)
+            {
+                StopSerialRead();
+            }
         }
 
         SerialReader serialReader = new SerialReader();
@@ -96,8 +100,14 @@ namespace SlamTest
 
         private void StopSerialRead()
         {
+
             isStopped = true;
             StartStopButton.Icon = new SymbolIcon(Symbol.Play);
+            ToolTip toolTip = new ToolTip();
+            toolTip.Content = "Start reading Serial Device";
+            ToolTipService.SetToolTip(StartStopButton, toolTip);
+            StartStopButton.Label = "Start reading Serial Device";
+
             serialReader.CancelReadTask();
             serialReader.RaiseDataReceivedEvent -= DataReceivedEventHandler;
             serialReader.RaiseDataReceivedEvent -= mapController.DataReceivedEventHandler;
@@ -107,6 +117,7 @@ namespace SlamTest
         {
             isStopped = false;
             StartStopButton.Icon = new SymbolIcon(Symbol.Stop);
+            StartStopButton.Label = "Stop reading Serial Device";
             ToolTip toolTip = new ToolTip();
             toolTip.Content = "Stop reading Serial Device";
             ToolTipService.SetToolTip(StartStopButton, toolTip);

@@ -16,10 +16,6 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
                 <TextBlock Name="SerialReadTextBlock" Grid.Column="0"></TextBlock>
             </Grid>
 
@@ -58,6 +54,7 @@
             <AppBarButton Name="StartStopButton" Icon="Play" Label="Start reading Serial Device" IsEnabled="False" ToolTipService.ToolTip="Start reading Serial Device"  Click="StartStopSerialButton_OnClick"></AppBarButton>
 
             <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" ToolTipService.ToolTip="Refresh Serial Devices" Click="RefreshButton_OnClick"></AppBarButton>
+            <AppBarSeparator></AppBarSeparator>
             <AppBarToggleButton Name="SaveSerialToggleButton" Icon="Save" Label="Save serial messages to file" Checked="SaveSerialToggleButton_OnChecked"></AppBarToggleButton>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Name="ClearMapButton" Icon="ClearSelection" Label="Reset Map" Click="ClearMapButton_OnClick">
