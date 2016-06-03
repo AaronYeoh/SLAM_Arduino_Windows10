@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.SerialCommunication;
+using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Streams;
 using Windows.System;
@@ -168,16 +169,23 @@ namespace SlamTest
         {
             if (file != null)
             {
-                try
+                int NumberOfRetries = 5;
+                for (int i = 1; i <= NumberOfRetries; ++i)
                 {
-                    await Windows.Storage.FileIO.AppendTextAsync(file, str);
-                }
-                catch
-                {
-                    file = null; // make user choose another file
+                    try
+                    {
+                        await Windows.Storage.FileIO.AppendTextAsync(file, str);
+                        break;
+                    }
+                    catch
+                    {
+                        //if (i == NumberOfRetries)
+                            //file = null; // make user choose another file
+                            Task.Delay(i+2).Wait();
+                    }
                 }
             }
-            
+
         }
 
         private void RefreshButton_OnClick(object sender, RoutedEventArgs e)
@@ -238,10 +246,11 @@ namespace SlamTest
                 try
                 {
                     file = await StorageApplicationPermissions.FutureAccessList.GetFileAsync("Default");
+                    await file.OpenAsync(FileAccessMode.ReadWrite);
                 }
                 catch
                 {
-                    //exterminate
+                    
                 }
                 if (file == null)
                 {

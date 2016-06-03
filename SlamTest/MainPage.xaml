@@ -55,7 +55,7 @@
 
             <AppBarButton Name="RefreshButton" Icon="Refresh" Label="Refresh Serial Devices" ToolTipService.ToolTip="Refresh Serial Devices" Click="RefreshButton_OnClick"></AppBarButton>
             <AppBarSeparator></AppBarSeparator>
-            <AppBarToggleButton Name="SaveSerialToggleButton" Icon="Save" Label="Save serial messages to file" Checked="SaveSerialToggleButton_OnChecked"></AppBarToggleButton>
+            <AppBarToggleButton Name="SaveSerialToggleButton" Icon="Save" Label="Save serial messages to file" Checked="SaveSerialToggleButton_OnChecked" IsChecked="True"></AppBarToggleButton>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Name="ClearMapButton" Icon="ClearSelection" Label="Reset Map" Click="ClearMapButton_OnClick">
                 </AppBarButton>

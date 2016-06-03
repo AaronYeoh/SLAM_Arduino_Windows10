@@ -32,7 +32,7 @@ namespace SlamTest
                     BotPose.YPosBot = (int) obj.yPos;
                     BotPose.ZAngleBot = (int) obj.zAng;
 
-                    if (obj.message != oldMessage)
+                    if (obj.message != null && obj.message != oldMessage)
                     {
                         ApplicationView applicationView = ApplicationView.GetForCurrentView();
                         applicationView.Title = obj.message;
