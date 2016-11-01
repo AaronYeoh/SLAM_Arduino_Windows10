@@ -15,6 +15,7 @@ Click squares to emulate a sensor reading at that position.
 
 ### Simulation in action
 ![Image of Simulation3](https://i.gyazo.com/6ccafb6f55f7fc9e5fbc446abab3deb1.gif)
+### Chaos!
 ![Image of Simulation2](https://i.gyazo.com/826b2c9039a0d67b9e3e3f25fd286866.gif)
 
 
